@@ -7,6 +7,64 @@ var create_crypto=(value,secret)=>{
 	return str;
 }
 
+var set_name=(member)=>{
+	let name=member[0];
+	for(let i=1;i<member.length;i++){
+		name+=",";
+		name+=member[i];
+	}
+	return name;
+}
+
+var create_room=(member)=>{
+	let num=uuidv4();
+	let name=set_name(member);
+	let msg=new Object();
+	let new_room=new Room({
+		num: num,
+		name: name,
+		last_msg: Date.now(),
+		member: member
+	});
+	if(member.length==0){
+		msg.code=204;
+		msg.con="can't create room with zero members";
+	}
+	else if(name===""){
+		msg.code=500;
+		console.log("no name at createroom");
+	}
+	else{
+		await new_room.save((err)=>{
+			if(err){
+				msg.code=500;
+				console.log("can't save Room at create room");
+			}
+		});
+	}
+	else{
+		msg.code=200;
+		msg.num=num;
+	}	
+	await init_msg(member,num);
+	return msg;
+}
+
+var create_user=async(name,pwd,room)=>{
+	let new_user=new User({
+		account: name,
+		pwd: pwd,
+		rooms: [room],
+		friends: []
+	});
+	await new_user.save((err)=>{
+		if(err){
+			console.log("can't save new_user at create_user");
+		}
+	});
+}
+
+
 exports.login=async(name,pwd)=>{
 	let msg=new Object();
 	let user=await User.findOne({account: name});
@@ -46,8 +104,8 @@ exports.register=async(name,pwd,passwd)=>{
 		msg.con="user already exists";
 	}
 	else{
-		msg.code=200;
-		//create user
+		msg=create_user(name,res_pwd);
 	}
 	return msg;
 }
+
