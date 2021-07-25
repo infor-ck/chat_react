@@ -16,7 +16,7 @@ var set_name=(member)=>{
 	return name;
 }
 
-var create_room=(member)=>{
+var create_room=async(member)=>{
 	let num=uuidv4();
 	let name=set_name(member);
 	let msg=new Object();
@@ -40,11 +40,11 @@ var create_room=(member)=>{
 				msg.code=500;
 				console.log("can't save Room at create room");
 			}
+			else{
+				msg.code=200;
+				msg.num=num;
+			}
 		});
-	}
-	else{
-		msg.code=200;
-		msg.num=num;
 	}	
 	//await init_msg(member,num); //not ready
 	return msg;
