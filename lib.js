@@ -7,18 +7,25 @@ const { v4: uuidv4 } = require('uuid');
 /*
 ref:
 	login
-	-create_crypto
+		-create_crypto
 	register
-	-create_crypto
-	-create_user
+		-create_crypto
+		-create_user
+			-create_room
+				-set_name
+				-init_msg
+	init_data
+		-check_status
+		-load_room
+		-load_friends
+		-load_messages
+	append_room
 		-create_room
 			-set_name
 			-init_msg
-	init_data
-	-check_status
-	-load_room
-	-load_friends
-	-load_messages
+	save_msg
+	load_msg
+		-load_messages
 */
 
 exports.login=async(name,pwd)=>{
@@ -206,7 +213,39 @@ var load_messages=async(room,start_point)=>{
 	return msg;
 }
 
+exports.append_room=async(member)=>{
+	let msg=await create_room(member);
+	if(msg.code===200){
+		for(let i=0;i<member.length;i++){
+			User.updateOne({name: member[i]},{$push: {rooms: msg.num}},(err)=>{
+				if(err){
+					console.log(`${member[i]} err at appendroom`);
+				}
+			})
+		}
+	}
+	return msg;	
+}
 
+exports.save_msg=async(content,name,room)=>{
+	let new_msg=new Msg({
+		name: name,
+		content: content,
+		room: room,
+		createdate: Date.now()
+	});
+	await new_msg.save((err)=>{
+		if(err){
+			console.log("save msg error at save_msg");
+		}
+	});
+	return [new_msg];
+}
+
+exports.load_msg=async(room,msg_num)=>{
+	let msg=await load_messages(room,msg_num);
+	return msg;
+}
 
 
 

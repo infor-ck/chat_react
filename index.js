@@ -2,14 +2,13 @@ var express=require('express');
 var app=express();
 var path=require('path');
 const server=require("http").Server(app);
-var io=require("socket.io")(server,{
-	path:"/chat"
-});
+var io=require("socket.io")(server);
+var cors=require("cors");
 
 
 //other files 
 var lib=require("./lib");
-var cors = require("cors");
+
 app.use(cors());
 
 
@@ -32,7 +31,7 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(cors());
 
 app.get("/",(req,res,next)=>{
 	res.sendFile(__dirname+"/login.html");
