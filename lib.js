@@ -14,7 +14,11 @@ ref:
 		-create_room
 			-set_name
 			-init_msg
-
+	init_data
+	-check_status
+	-load_room
+	-load_friends
+	-load_messages
 */
 
 exports.login=async(name,pwd)=>{
@@ -145,25 +149,18 @@ var init_msg=async(member,num)=>{
 	}
 }
 
-
-
-//below is under testing
-
 exports.init_data=async(name,room)=>{
 	let data=new Object();
 	data.status=await check_status(name,room);
 	if(data.status.code===200){
 		let rooms=await load_room(name);
 		let friends=await load_friends(name);
-		let messages=await load_messages(room,0);//init messages
+		let messages=await load_messages(room,0);
 		data.rooms=rooms;
 		data.friends=friends;
-		data.messages=messages;
-		return data; 
-	}
-	else{
-		return status;
+		data.messages=messages;		
 	}	
+	return data; 
 }
 
 var check_status=async(name,room)=>{
