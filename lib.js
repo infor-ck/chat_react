@@ -46,22 +46,27 @@ var create_room=(member)=>{
 		msg.code=200;
 		msg.num=num;
 	}	
-	await init_msg(member,num);
+	//await init_msg(member,num); //not ready
 	return msg;
 }
 
-var create_user=async(name,pwd,room)=>{
-	let new_user=new User({
-		account: name,
-		pwd: pwd,
-		rooms: [room],
-		friends: []
-	});
-	await new_user.save((err)=>{
-		if(err){
-			console.log("can't save new_user at create_user");
-		}
-	});
+var create_user=async(name,pwd)=>{
+	let msg=await create_room([name]);
+	if(msg.code==200){
+		let new_user=new User({
+			account: name,
+			pwd: pwd,
+			rooms: [msg.num],
+			friends: []
+		});
+		await new_user.save((err)=>{
+			if(err){
+				msg.code=500;
+				console.log("can't save new_user at create_user");
+			}
+		});
+	}
+	return msg;		
 }
 
 
