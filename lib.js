@@ -1,4 +1,5 @@
 var User=require("./db/user");
+var Room = require("./db/room");
 var crypto=require('crypto');
 const { v4: uuidv4 } = require('uuid');
 

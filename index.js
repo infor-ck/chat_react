@@ -9,6 +9,8 @@ var io=require("socket.io")(server,{
 
 //other files 
 var lib=require("./lib");
+var cors = require("cors");
+app.use(cors());
 
 
 app.set('views', path.join(__dirname, 'views'));
