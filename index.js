@@ -35,12 +35,18 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.get("/",(req,res,next)=>{
+	res.sendFile(__dirname+"/login.html");
+});
+app.get("/register",(req,res,next)=>{
 	res.sendFile(__dirname+"/register.html");
 });
 
 //api
 app.post("/login",async(req,res,next)=>{
 	let result=await lib.login(req.body.name,req.body.pwd);
+	if(result.code===200){
+		result.data=await lib.init_data(req.body.name,result.num);
+	}
 	res.send(result);
 });
 
