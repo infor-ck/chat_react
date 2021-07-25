@@ -35,7 +35,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.get("/",(req,res,next)=>{
-	res.sendFile(__dirname+"/login.html");
+	res.sendFile(__dirname+"/register.html");
 });
 
 //api

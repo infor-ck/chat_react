@@ -38,14 +38,11 @@ var create_room=async(member)=>{
 	else{
 		await new_room.save((err)=>{
 			if(err){
-				msg.code=500;
 				console.log("can't save Room at create room");
 			}
-			else{
-				msg.code=200;
-				msg.num=num;
-			}
 		});
+		msg.code=200;
+		msg.num=num;
 	}	
 	//await init_msg(member,num); //not ready
 	return msg;
@@ -53,9 +50,9 @@ var create_room=async(member)=>{
 
 var create_user=async(name,pwd)=>{
 	let msg=await create_room([name]);
-	if(msg.code==200){
+	if(msg.code===200){
 		let new_user=new User({
-			account: name,
+			name: name,
 			pwd: pwd,
 			rooms: [msg.num],
 			friends: []
@@ -73,7 +70,7 @@ var create_user=async(name,pwd)=>{
 
 exports.login=async(name,pwd)=>{
 	let msg=new Object();
-	let user=await User.findOne({account: name});
+	let user=await User.findOne({name: name});
 	let res_pwd=create_crypto(pwd,"secret_key");
 	if(name===""||pwd===""){
 		msg.code=204;
@@ -95,7 +92,7 @@ exports.login=async(name,pwd)=>{
 
 exports.register=async(name,pwd,passwd)=>{
 	let msg=new Object();
-	let user=await User.findOne({account: name});
+	let user=await User.findOne({name: name});
 	let res_pwd=create_crypto(pwd,"secret_key");
 	if(name===""||pwd===""||passwd===""){
 		msg.code=204;
@@ -110,7 +107,7 @@ exports.register=async(name,pwd,passwd)=>{
 		msg.con="user already exists";
 	}
 	else{
-		msg=create_user(name,res_pwd);
+		msg=await create_user(name,res_pwd);
 	}
 	return msg;
 }
