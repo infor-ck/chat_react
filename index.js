@@ -51,9 +51,6 @@ app.post("/login",async(req,res,next)=>{
 
 app.post("/register",async(req,res,next)=>{
 	let result=await lib.register(req.body.name,req.body.pwd,req.body.passwd);
-	if(result.code===200){
-		result.data=await lib.init_data(req.body.name,result.num);
-	}
 	res.send(result);
 });
 
