@@ -5,6 +5,7 @@ const { v4: uuidv4 } = require('uuid');
 
 module.exports=(io)=>{
 	io.on("connection",async(socket)=>{
+		console.log("jizz connected");
 		let name=await socket.handshake.query.name;
 		let room=await socket.handshake.query.room;
 		let user=await User.findOne({name: name});

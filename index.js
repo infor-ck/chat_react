@@ -9,8 +9,6 @@ var cors=require("cors");
 //other files 
 var lib=require("./lib");
 
-app.use(cors());
-
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -47,11 +45,13 @@ app.post("/login",async(req,res,next)=>{
 		result.data=await lib.init_data(req.body.name,result.num);
 	}
 	res.send(result);
+	console.log(result);
 });
 
 app.post("/register",async(req,res,next)=>{
 	let result=await lib.register(req.body.name,req.body.pwd,req.body.passwd);
 	res.send(result);
+	console.log(result);
 });
 
 server.listen(8080,()=>{
