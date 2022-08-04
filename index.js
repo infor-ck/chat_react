@@ -1,8 +1,9 @@
 var express=require('express');
 var app=express();
 var path=require('path');
-const server=require("http").Server(app);
-var io=require("socket.io")(server);
+const http = require("http");
+const server=http.createServer(app);
+const { Server } = require("socket.io");
 var cors=require("cors");
 
 
@@ -15,8 +16,9 @@ app.set('view engine', 'ejs');
 
 
 //socket.io
+const io = new Server(server);
 var socket_connection=require("./socket");
-socket_connection(io);
+app.use(socket_connection(io));
 
 //connect to db
 var mongoose=require('mongoose');
