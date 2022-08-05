@@ -5,13 +5,13 @@ const { v4: uuidv4 } = require('uuid');
 
 module.exports = (io) => {
 	io.on("connection", async (socket) => {
-		let name = socket.handshake.query.name;
-		let room = socket.handshake.query.room;
+		let name = await socket.handshake.query.name;
+		let room = await socket.handshake.query.room;
 		let user = await User.findOne({ name: name });
 		console.log("connected");
 		// console.log({ name, room });
 		if (user) {
-			socket.join(user.rooms);
+			await socket.join(user.rooms);
 		}
 		socket.on("send_msg", async (content) => {
 			console.log("received");
