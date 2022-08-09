@@ -18,7 +18,7 @@ app.set('view engine', 'ejs');
 //socket.io
 const io = new Server(server);
 var socket_connection=require("./socket");
-socket_connection(io)
+socket_connection(io);
 
 //connect to db
 var mongoose=require('mongoose');
