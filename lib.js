@@ -26,6 +26,7 @@ ref:
 	save_msg
 	load_msg
 		-load_messages
+	add friend
 */
 
 exports.login=async(name,pwd)=>{
@@ -195,7 +196,11 @@ var load_room=async(name)=>{
 	let rooms=await Room.find({member:name});
 	let result=[];
 	for(let i=0;i<rooms.length;++i){
-		let attr={name: rooms[i].name,num: rooms[i].num};
+		let attr={
+			name: rooms[i].name,
+			num: rooms[i].num,
+			member:rooms[i].member
+		};
 		result.push(attr);
 	}
 	return result;
@@ -247,5 +252,43 @@ exports.load_msg=async(room,msg_num)=>{
 	return msg;
 }
 
+var check_friend=async(name,friend)=>{
+	let msg = new Object();
+	let user = await User.findOne({name: friend});
+	if(!user){
+		msg.code = 404;
+		msg.con = "friend not exist";
+	}else{
+		let friends = await load_friends(name);
+		if(friends.includes(friend)){
+			msg.code = 204;
+			msg.con = "friend has been added";
+		}else{
+			msg.code=200;
+		}
+	}
+	return msg
+}
+
+exports.add_friend=async(name,friend)=>{
+	let msg = await check_friend(name,friend);
+	if(msg.code===200){
+		console.log("add");
+		User.updateOne({name: name},{$push: {friends: friend}})
+		.catch((err)=>{
+			console.log("err at add friends");
+			console.log(err);
+		}).then(async()=>{;
+			let friends = await load_friends(name);
+			msg = {...msg,data:friends};
+		})
+		User.updateOne({name: friend},{$push: {friends: name}})
+		.catch((err)=>{
+			console.log("err at add friends");
+			console.log(err);
+		})
+	}
+	return msg;
+}
 
 

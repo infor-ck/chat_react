@@ -27,6 +27,10 @@ module.exports = (io) => {
 			let data = await lib.append_room(member);
 			io.emit("append_room", data);
 		});
-
+		socket.on("add_friend", async (data)=>{
+			console.log(data);
+			let msg = await lib.add_friend(...data);
+			io.emit("receive_friend",msg);
+		});
 	});
 }

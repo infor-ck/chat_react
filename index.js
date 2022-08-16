@@ -22,11 +22,11 @@ socket_connection(io);
 
 //connect to db
 var mongoose=require('mongoose');
-mongoose.connect( "mongodb://127.0.0.1:27017/chat_react",{ useNewUrlParser: true,useUnifiedTopology: true,useCreateIndex: true },()=>{
-  console.log('connected to mongodb');
-});
+mongoose.connect( "mongodb://127.0.0.1:27017/chat_react")
+.then(()=>{console.log('connected to mongodb');})
+.catch((err)=>console.error(`MongoDB connection error:\n${err}`));
 var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+// db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
